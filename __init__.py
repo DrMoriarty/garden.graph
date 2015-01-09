@@ -1041,13 +1041,25 @@ class SmoothLinePlot(Plot):
     '''
 
     SMOOTH_FS = '''
-    $HEADER$
+    #ifdef GL_ES
+    precision highp float;
+    #endif
+
+    /* Outputs from the vertex shader */
+    varying vec4 frag_color;
+    varying vec2 tex_coord0;
+
+    /* uniform texture samplers */
+    uniform sampler2D texture0;
 
     void main(void) {
+        /*
         float edgewidth = 0.015625 * 64.;
         float t = texture2D(texture0, tex_coord0).r;
         float e = smoothstep(0., edgewidth, t);
         gl_FragColor = frag_color * vec4(1, 1, 1, e);
+        */
+        gl_FragColor = frag_color;
     }
     '''
 
@@ -1098,6 +1110,10 @@ class SmoothLinePlot(Plot):
             points += [x, y]
         self._gline.points = points
 
+    def _set_linewidth(self, value):
+        if hasattr(self, '_mesh'):
+            self._mesh.width = value
+    linewidth = AliasProperty(lambda self: self._mesh.width, _set_linewidth)
 
 class ContourPlot(Plot):
     """
