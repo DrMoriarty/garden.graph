@@ -266,18 +266,24 @@ class Graph(Widget):
             else:
                 # distance between each tick
                 tick_dist = major / float(minor if minor else 1.0)
-                n_ticks = int(floor((s_max - s_min) / tick_dist) + 1)
-                points_major = [0] * int(floor((s_max - s_min) / float(major))
+                min = s_min
+                if s_max > 0 and s_min < 0:
+                    min = floor(s_min / major) * major
+                n_ticks = int(floor((s_max - min) / tick_dist) + 1)
+                points_major = [0] * int(floor((s_max - min) / float(major))
                                          + 1)
                 points_minor = [0] * (n_ticks - len(points_major) + 1)
                 k = 0  # position in points major
                 k2 = 0  # position in points minor
                 for m in range(0, n_ticks):
+                    pt = m * tick_dist + min
+                    if pt < s_min:
+                        continue
                     if minor and m % minor:
-                        points_minor[k2] = m * tick_dist + s_min
+                        points_minor[k2] = pt
                         k2 += 1
                     else:
-                        points_major[k] = m * tick_dist + s_min
+                        points_major[k] = pt
                         k += 1
             del points_major[k:]
             del points_minor[k2:]
