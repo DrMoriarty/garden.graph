@@ -141,10 +141,10 @@ class Graph(Widget):
 
     def __init__(self, **kwargs):
         super(Graph, self).__init__(**kwargs)
-
+        
         with self.canvas:
-            self._fbo = Fbo(size=self.size, with_stencilbuffer=True)
-
+            self._fbo = Fbo(size=self.size, with_stencilbuffer=False)
+        
         with self._fbo:
             self._background_color = Color(*self.background_color)
             self._background_rect = Rectangle(size=self.size)
@@ -152,11 +152,11 @@ class Graph(Widget):
             self._mesh_ticks = Mesh(mode='lines')
             self._mesh_rect_color = Color(*self.border_color)
             self._mesh_rect = Mesh(mode='line_strip')
-
+        
         with self.canvas:
             Color(1, 1, 1)
             self._fbo_rect = Rectangle(size=self.size, texture=self._fbo.texture)
-
+        
         mesh = self._mesh_rect
         mesh.vertices = [0] * (5 * 4)
         mesh.indices = range(5)
